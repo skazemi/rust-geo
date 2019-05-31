@@ -1,0 +1,72 @@
+[package]
+name = "geo"
+description = "Geospatial primitives and algorithms"
+version = "0.12.2"
+authors = ["Corey Farwell <coreyf@rwell.org>"]
+license = "MIT/Apache-2.0"
+repository = "https://github.com/georust/geo"
+documentation = "https://docs.rs/geo/"
+readme = "../README.md"
+keywords = ["gis", "geo", "geography", "geospatial"]
+autobenches = true
+edition = "2018"
+
+[badges]
+travis-ci = { repository = "georust/geo" }
+
+[dependencies]
+num-traits = "0.2"
+serde = { version = "1.0", optional = true, features = ["derive"] }
+rstar = { version = "0.2" }
+failure = "0.1.2"
+postgis = { version = "0.6", optional = true }
+proj = { version = "0.7", optional = true }
+
+# Swap the next two lines when publishing
+# geo-types = { version = "0.4.2", features = ["rstar"] }
+geo-types = { path = "../geo-types", features = ["rstar"] }
+
+[features]
+default = []
+postgis-integration = ["postgis"]
+use-proj = ["proj"]
+use-serde = ["serde", "geo-types/serde"]
+
+[dev-dependencies]
+approx = "0.3.0"
+criterion = { version = "0.2" }
+
+[[bench]]
+name = "area"
+harness = false
+
+[[bench]]
+name = "convex_hull"
+harness = false
+
+[[bench]]
+name = "vincenty_distance"
+harness = false
+
+[[bench]]
+name = "extremes"
+harness = false
+
+[[bench]]
+name = "euclidean_distance"
+harness = false
+
+[[bench]]
+name = "rotate"
+harness = false
+
+[[bench]]
+name = "simplify"
+harness = false
+
+[[bench]]
+name = "frechet_distance"
+harness = false
+
+[package.metadata.docs.rs]
+features = ["postgis"]

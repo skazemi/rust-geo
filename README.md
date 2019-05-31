@@ -1,41 +1,62 @@
-[![rust-geo](https://avatars1.githubusercontent.com/u/10320338?v=4&s=50)](https://github.com/georust)
+[![geo](https://avatars1.githubusercontent.com/u/10320338?v=4&s=50)](https://github.com/georust)
 
-[![Build Status](https://travis-ci.org/georust/rust-geo.svg?branch=master)](https://travis-ci.org/georust/rust-geo)
+[![Build Status](https://travis-ci.org/georust/geo.svg?branch=master)](https://travis-ci.org/georust/geo)
 [![geo on Crates.io](https://meritbadge.herokuapp.com/geo)](https://crates.io/crates/geo)
 
-# rust-geo
+# geo
 
 ## Geospatial Primitives, Algorithms, and Utilities
 
-The `geo` crate provides a number of geospatial primitive types such as `Point`, `LineString`, and `Polygon`, and provides algorithms and operations such as:
+The `geo` crate provides geospatial primitive types such as `Point`, `LineString`, and `Polygon`, and provides algorithms and operations such as:
 - Area and centroid calculation
 - Simplification and convex hull operations
 - Euclidean and Haversine distance measurement
 - Intersection checks
+- Transformation to and from PostGIS types
 - Affine transforms such as rotation and translation.
 
 Please refer to [the documentation](https://docs.rs/geo) for a complete list.
 
+The primitive types also provide the basis for other functionality in the `Geo` ecosystem, including:
+
+- [Coordinate transformation and projection](https://github.com/georust/proj)
+- Serialization to and from [GeoJSON](https://github.com/georust/geojson) and [WKT](https://github.com/georust/wkt)
+- [Geocoding](https://github.com/georust/geocoding)
+- [Working with GPS data](https://github.com/georust/gpx)
+
 ## Example
 
 ```rust
-use geo::{Polygon, LineString};
+use geo::{line_string, polygon};
 use geo::convexhull::ConvexHull;
 
 // An L shape
-let coords = vec![(0.0, 0.0), (4.0, 0.0), (4.0, 1.0), (1.0, 1.0), (1.0, 4.0), (0.0, 4.0), (0.0, 0.0)];
-// conversions to geo types are provided from several kinds of coordinate sequences
-let poly = Polygon::new(coords.into(), vec![]);
+let poly = polygon![
+    (x: 0.0, y: 0.0),
+    (x: 4.0, y: 0.0),
+    (x: 4.0, y: 1.0),
+    (x: 1.0, y: 1.0),
+    (x: 1.0, y: 4.0),
+    (x: 0.0, y: 4.0),
+    (x: 0.0, y: 0.0),
+];
 
-// uses the QuickHull algorithm to calculate the polygon's convex hull
+// Ccalculate the polygon's convex hull
 let hull = poly.convex_hull();
-let correct = vec![(0.0, 0.0), (0.0, 4.0), (1.0, 4.0), (4.0, 1.0), (4.0, 0.0), (0.0, 0.0)]
-assert_eq!(hull.exterior, correct.into());
+
+assert_eq!(hull.exterior(), line_string![
+    (x: 0.0, y: 0.0),
+    (x: 0.0, y: 4.0),
+    (x: 1.0, y: 4.0),
+    (x: 4.0, y: 1.0),
+    (x: 4.0, y: 0.0),
+    (x: 0.0, y: 0.0),
+]);
 ```
 
 ## Contributing
 
-Contributions are welcome! This crate is work in progress, and a great deal of work remains to be done. Have a look at the [issues](https://github.com/georust/rust-geo/issues), and open a pull request if you'd like to add an algorithm or some functionality.
+Contributions are welcome! Have a look at the [issues](https://github.com/georust/geo/issues), and open a pull request if you'd like to add an algorithm or some functionality.
 
 ## License
 
